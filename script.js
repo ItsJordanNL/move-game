@@ -2,6 +2,9 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let score = 0; // Initialize the score
 let gameStarted = false; // Track if the game has started
+let itemsCollected = 0; // Track the number of items collected
+let startTime; // Store the start time
+let timerInterval; // Store the interval ID for the timer
 
 // Define player object
 const player = {
@@ -40,11 +43,18 @@ function drawItem() {
 
 // Function to update game elements
 function update() {
+  if (itemsCollected >= 10) {
+    endGame();
+    return;
+  }
+
   if (itemIsCollected(player, item)) {
     item.x = Math.random() * canvas.width;
     item.y = Math.random() * canvas.height;
-    score++;
-    console.log(score);
+    score += 1; // Increment the score when collecting the item
+    updateScore(); // Update the displayed score
+
+    itemsCollected += 1; // Move this line outside of the if block
   }
 
   if (keys["ArrowUp"] && player.y - player.radius > 0) {
@@ -65,7 +75,14 @@ function update() {
   drawItem();
   if (gameStarted) {
     requestAnimationFrame(update); // Continue updating if the game has started
-}
+  }
+  else {
+    // Add this block to stop the game loop when the game is over
+    canvas.style.display = 'none'; // Hide the canvas
+    document.getElementById('score').style.display = 'none'; // Hide the score
+    return;
+  }
+  console.log(gameStarted);
 }
 
 // Function to check if the item is collected
@@ -82,16 +99,54 @@ function updateScore() {
   scoreElement.textContent = `Score: ${score}`;
 }
 
+// Function to start the game
 function startGame() {
   gameStarted = true;
+  startTime = Date.now(); // Record the start time
+  timerInterval = setInterval(updateTimer, 1000); // Start the timer
   document.getElementById('startButton').style.display = 'none'; // Hide the "Start" button
   canvas.style.display = 'block'; // Show the canvas
   document.getElementById('score').style.display = 'block'; // Show the score
+  document.getElementById('timer').style.display = 'block'; // Show the timer
   update(); // Start the game loop
 }
 
-// Add an event listener to the "Start" button
+// Function to end the game
+function endGame() {
+  gameStarted = false;
+  clearInterval(timerInterval); // Stop the timer
+  document.getElementById('gameOver').style.display = 'block'; // Show "Game Over" message
+  document.getElementById('restartButton').style.display = 'block'; // Show "Restart" button
+  const endTime = Date.now();
+  const elapsedTime = (endTime - startTime) / 1000; // Calculate elapsed time in seconds
+  document.getElementById('gameOver').textContent = `Game Over\nTime: ${elapsedTime} seconds`;
+}
+
+// Function to restart the game
+function restartGame() {
+  itemsCollected = 0; // Reset items collected
+  score = 0; // Reset the score
+  gameStarted = false;
+  clearInterval(timerInterval); // Stop the timer
+  document.getElementById('gameOver').style.display = 'none'; // Hide "Game Over" message
+  document.getElementById('restartButton').style.display = 'none'; // Hide "Restart" button
+  document.getElementById('score').textContent = 'Score: 0'; // Reset displayed score
+  document.getElementById('timer').textContent = 'Time: 0'; // Reset displayed timer
+  startGame(); // Start a new game
+}
+
+// Function to update the timer
+function updateTimer() {
+  if (gameStarted) {
+    const currentTime = Date.now();
+    const elapsedTime = (currentTime - startTime) / 1000; // Calculate elapsed time in seconds
+    document.getElementById('timer').textContent = `Time: ${elapsedTime.toFixed(1)} seconds`;
+  }
+}
+
+// Add event listeners
 document.getElementById('startButton').addEventListener('click', startGame);
+document.getElementById('restartButton').addEventListener('click', restartGame);
 
 // Keyboard input handling
 const keys = {};
