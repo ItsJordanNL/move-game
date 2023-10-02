@@ -1,20 +1,22 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+let score = 0; // Initialize the score
+let gameStarted = false; // Track if the game has started
 
 // Define player object
 const player = {
   x: canvas.width / 2,
   y: canvas.height / 2,
-  radius: 20,
+  radius: 10,
   color: "red",
-  speed: 5,
+  speed: 2,
 };
 
 // Define item object
 const item = {
   x: Math.random() * canvas.width,
   y: Math.random() * canvas.height,
-  radius: 10,
+  radius: 8,
   color: "green",
 };
 
@@ -41,6 +43,8 @@ function update() {
   if (itemIsCollected(player, item)) {
     item.x = Math.random() * canvas.width;
     item.y = Math.random() * canvas.height;
+    score++;
+    console.log(score);
   }
 
   if (keys["ArrowUp"] && player.y - player.radius > 0) {
@@ -59,7 +63,9 @@ function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawPlayer();
   drawItem();
-  requestAnimationFrame(update);
+  if (gameStarted) {
+    requestAnimationFrame(update); // Continue updating if the game has started
+}
 }
 
 // Function to check if the item is collected
@@ -67,9 +73,25 @@ function itemIsCollected(player, item) {
   const distance = Math.sqrt(
     (player.x - item.x) ** 2 + (player.y - item.y) ** 2
   );
-
   return distance < player.radius + item.radius;
 }
+
+// Function to update and display the score
+function updateScore() {
+  const scoreElement = document.getElementById('score');
+  scoreElement.textContent = `Score: ${score}`;
+}
+
+function startGame() {
+  gameStarted = true;
+  document.getElementById('startButton').style.display = 'none'; // Hide the "Start" button
+  canvas.style.display = 'block'; // Show the canvas
+  document.getElementById('score').style.display = 'block'; // Show the score
+  update(); // Start the game loop
+}
+
+// Add an event listener to the "Start" button
+document.getElementById('startButton').addEventListener('click', startGame);
 
 // Keyboard input handling
 const keys = {};

@@ -6,4 +6,6 @@ body {
 canvas {
   background-color: skyblue;
   display: block;
+  height: 100vh;
+  width: 100%;
 }
