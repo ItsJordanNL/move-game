@@ -104,7 +104,7 @@ function startGame() {
   gameStarted = true;
   startTime = Date.now(); // Record the start time
   timerInterval = setInterval(updateTimer, 1000); // Start the timer
-  document.getElementById('startButton').style.display = 'none'; // Hide the "Start" button
+  document.getElementById('startDiv').style.display = 'none'; // Hide the "Start" button
   canvas.style.display = 'block'; // Show the canvas
   document.getElementById('score').style.display = 'block'; // Show the score
   document.getElementById('timer').style.display = 'block'; // Show the timer

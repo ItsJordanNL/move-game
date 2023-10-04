@@ -3,9 +3,34 @@ body {
   overflow: hidden;
 }
 
+h1 {
+  background-color: red;
+}
+
 canvas {
   background-color: skyblue;
   display: block;
   height: 100vh;
   width: 100%;
+}
+
+#startDiv {
+  background-color: white;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#startButton {
+  background-color: lightblue;
+  padding: 10px 15px;
+  border: 3px solid orange;
+  border-radius: 8px;
+  color: var(--darkblue);
+  display: flex;
+  align-items: center;
+  font-size: 18px;
 }
