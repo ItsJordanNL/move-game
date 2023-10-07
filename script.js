@@ -1,5 +1,10 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+
+// Set canvas size to match the screen resolution
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
 let score = 0; // Initialize the score
 let gameStarted = false; // Track if the game has started
 let itemsCollected = 0; // Track the number of items collected
@@ -10,16 +15,16 @@ let timerInterval; // Store the interval ID for the timer
 const player = {
   x: canvas.width / 2,
   y: canvas.height / 2,
-  radius: 10,
+  radius: 25,
   color: "red",
-  speed: 2,
+  speed: 8,
 };
 
 // Define item object
 const item = {
   x: Math.random() * canvas.width,
   y: Math.random() * canvas.height,
-  radius: 8,
+  radius: 20,
   color: "green",
 };
 
@@ -96,7 +101,7 @@ function itemIsCollected(player, item) {
 // Function to update and display the score
 function updateScore() {
   const scoreElement = document.getElementById('score');
-  scoreElement.textContent = `Score: ${score}`;
+  scoreElement.textContent = `Score:\xa0\xa0${score} / 10`;
 }
 
 // Function to start the game
@@ -140,7 +145,7 @@ function updateTimer() {
   if (gameStarted) {
     const currentTime = Date.now();
     const elapsedTime = (currentTime - startTime) / 1000; // Calculate elapsed time in seconds
-    document.getElementById('timer').textContent = `Time: ${elapsedTime.toFixed(1)} seconds`;
+    document.getElementById('timer').textContent = `Time:\xa0\xa0${elapsedTime.toFixed(0)}s`;
   }
 }
 
