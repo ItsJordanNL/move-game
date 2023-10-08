@@ -16,34 +16,75 @@ const player = {
   x: canvas.width / 2,
   y: canvas.height / 2,
   radius: 25,
-  color: "red",
+  color: "#282b30",
   speed: 8,
+  trail: [], // Array to store trail positions
+  trailLength: 8, // Number of trail segments to show
 };
 
 // Define item object
 const item = {
   x: Math.random() * canvas.width,
   y: Math.random() * canvas.height,
-  radius: 20,
-  color: "green",
+  crossSize: 70, // Size of the cross
+  crossWidth: 12, // Width of the cross
+  color: 'red',
 };
 
 // Function to draw player
 function drawPlayer() {
+  // Draw the player's current position
   ctx.beginPath();
   ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+  ctx.strokeStyle = '#165bfb'; // Set outline color to blue
+  ctx.lineWidth = 10; // Set outline width
+  ctx.stroke();
+  ctx.closePath();
+
+  // Draw the player's dot
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, player.radius - 3, 0, Math.PI * 2); // Smaller radius to create an outline effect
   ctx.fillStyle = player.color;
   ctx.fill();
   ctx.closePath();
+
+  // Draw the player's trail with an outline
+  for (let i = 0; i < player.trail.length; i++) {
+    // Draw the outline of the trail
+    ctx.beginPath();
+    ctx.arc(player.trail[i].x, player.trail[i].y, player.radius - 3, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(22, 91, 251, 0.8)'; // Set outline color to blue
+    ctx.lineWidth = 2; // Set outline width
+    ctx.stroke();
+    ctx.closePath();
+
+    // Draw the filled trail segment
+    ctx.beginPath();
+    ctx.arc(player.trail[i].x, player.trail[i].y, player.radius - 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(22, 91, 251, 0.0)'; // transparent blue for the trail
+    ctx.fill();
+    ctx.closePath();
+  }
 }
 
 // Function to draw item
 function drawItem() {
-  ctx.beginPath();
-  ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
+  // Draw the "X"-shaped item
   ctx.fillStyle = item.color;
-  ctx.fill();
-  ctx.closePath();
+
+  // Rotate the context by 45 degrees
+  ctx.save();
+  ctx.translate(item.x, item.y);
+  ctx.rotate(Math.PI / 4); // 45 degrees in radians
+
+  // Vertical stripe of the "X"
+  ctx.fillRect(-item.crossWidth / 2, -item.crossSize / 2, item.crossWidth, item.crossSize);
+
+  // Horizontal stripe of the "X"
+  ctx.fillRect(-item.crossSize / 2, -item.crossWidth / 2, item.crossSize, item.crossWidth);
+
+  // Restore the context to its original state
+  ctx.restore();
 }
 
 // Function to update game elements
@@ -51,6 +92,12 @@ function update() {
   if (itemsCollected >= 10) {
     endGame();
     return;
+  }
+
+  // Update the player's trail
+  player.trail.push({ x: player.x, y: player.y });
+  if (player.trail.length > player.trailLength) {
+    player.trail.shift(); // Remove the oldest trail segment
   }
 
   if (itemIsCollected(player, item)) {
@@ -95,7 +142,8 @@ function itemIsCollected(player, item) {
   const distance = Math.sqrt(
     (player.x - item.x) ** 2 + (player.y - item.y) ** 2
   );
-  return distance < player.radius + item.radius;
+
+  return distance < player.radius + Math.sqrt(item.crossSize ** 2 + item.crossWidth ** 2) / 2;
 }
 
 // Function to update and display the score
@@ -124,7 +172,7 @@ function endGame() {
   document.getElementById('restartButton').style.display = 'block'; // Show "Restart" button
   const endTime = Date.now();
   const elapsedTime = (endTime - startTime) / 1000; // Calculate elapsed time in seconds
-  document.getElementById('gameOver').textContent = `Game Over\nTime: ${elapsedTime} seconds`;
+  document.getElementById('gameOverMessage').textContent = `Time: ${elapsedTime} seconds`;
 }
 
 // Function to restart the game
