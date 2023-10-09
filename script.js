@@ -172,7 +172,7 @@ function endGame() {
   document.getElementById('restartButton').style.display = 'block'; // Show "Restart" button
   const endTime = Date.now();
   const elapsedTime = (endTime - startTime) / 1000; // Calculate elapsed time in seconds
-  document.getElementById('gameOverMessage').textContent = `Time: ${elapsedTime} seconds`;
+  document.getElementById('gameOverMessage').textContent = `Tijd:\xa0\xa0${elapsedTime} seconden`;
 }
 
 // Function to restart the game
@@ -184,7 +184,7 @@ function restartGame() {
   document.getElementById('gameOver').style.display = 'none'; // Hide "Game Over" message
   document.getElementById('restartButton').style.display = 'none'; // Hide "Restart" button
   document.getElementById('score').textContent = 'Score: 0'; // Reset displayed score
-  document.getElementById('timer').textContent = 'Time: 0'; // Reset displayed timer
+  document.getElementById('timer').textContent = 'Tijd: 0'; // Reset displayed timer
   startGame(); // Start a new game
 }
 
@@ -193,7 +193,7 @@ function updateTimer() {
   if (gameStarted) {
     const currentTime = Date.now();
     const elapsedTime = (currentTime - startTime) / 1000; // Calculate elapsed time in seconds
-    document.getElementById('timer').textContent = `Time:\xa0\xa0${elapsedTime.toFixed(0)}s`;
+    document.getElementById('timer').textContent = `Tijd:\xa0\xa0${elapsedTime.toFixed(0)}s`;
   }
 }
 
